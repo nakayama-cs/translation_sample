@@ -1,0 +1,23 @@
+{
+  "cloud-config": {
+    "project-id": "my-project-id",
+    "gspread-key-json": "keys/my-private-key.json",
+    "gspread-sheet-id": "aaaasdddadfasdfasdfasdfasdf",
+    "gspread-input-range": "A:A1",
+    "gspread-output-range": "B:B1"
+  },
+  "implicit-conversions": [
+    {
+      "input": "企業",
+      "output": "Company"
+    },
+    {
+      "input": "（％）",
+      "output": ""
+    },
+    {
+      "input": "（千円）",
+      "output": ""
+    }
+  ]
+}
