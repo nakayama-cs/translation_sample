@@ -59,7 +59,7 @@ func main() {
 		}
 
 		// 翻訳後文字列を変数名に変換
-		variableName := StrUtils.toUpperCamelCase(translated)
+		variableName := StrUtils.toSnakeCaseCase(translated)
 		fmt.Printf("%s => %s\n", d, variableName)
 
 		variableNames = append(variableNames, variableName)
