@@ -51,7 +51,7 @@ func main() {
 			// 特定の日本語は決められた英単語に変換する
 			input := str
 			for _, ic := range config.ImplicitConversions {
-				input = strings.ReplaceAll(input, ic.Input, fmt.Sprintf("%s  ", ic.Output))
+				input = strings.ReplaceAll(input, ic.Input, fmt.Sprintf("%s ", ic.Output))
 			}
 
 			// スペースが二つ以上続いている場合は１つにする
