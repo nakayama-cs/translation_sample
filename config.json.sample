@@ -8,16 +8,84 @@
   },
   "implicit-conversions": [
     {
+      "input": "％",
+      "output": "Parcent"
+    },
+    {
       "input": "企業",
       "output": "Company"
     },
     {
-      "input": "（％）",
-      "output": ""
+      "input": "法人",
+      "output": "Company"
     },
     {
-      "input": "（千円）",
-      "output": ""
+      "input": "取引先",
+      "output": "Business Unit"
+    },
+    {
+      "input": "取引先管理",
+      "output": "Business Unit Managegement"
+    },
+    {
+      "input": "基本情報",
+      "output": "Profile"
+    },
+    {
+      "input": "決算",
+      "output": "Financial"
+    },
+    {
+      "input": "拠点",
+      "output": "Branch"
+    },
+    {
+      "input": "設備",
+      "output": "Facilities"
+    },
+    {
+      "input": "認証",
+      "output": "Certificate"
+    },
+    {
+      "input": "技術情報",
+      "output": "Skill"
+    },
+    {
+      "input": "依頼データ",
+      "output": "Header"
+    },
+    {
+      "input": "社内管理データ",
+      "output": "Attribute"
+    },
+    {
+      "input": "TSR",
+      "output": "Tokyo Shoko Research"
+    },
+    {
+      "input": "（連絡先）コンテンツ",
+      "output": "Contact Content"
+    },
+    {
+      "input": "（連絡先）依頼データ",
+      "output": "Contact Header"
+    },
+    {
+      "input": "（第三者情報）コンテンツ",
+      "output": "Score Content"
+    },
+    {
+      "input": "（文書）マスタ",
+      "output": "Document"
+    },
+    {
+      "input": "有効管理データ",
+      "output": "Active Control"
+    },
+    {
+      "input": "得意分野",
+      "output": "Strength"
     }
   ]
 }
