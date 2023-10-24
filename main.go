@@ -46,11 +46,23 @@ func main() {
 	variableNames := make([]string, 0)
 	for _, d := range data {
 
-		// 特定の日本語は決められた英単語に変換する
-		input := d
-		for _, ic := range config.ImplicitConversions {
-			input = strings.ReplaceAll(input, ic.Input, ic.Output)
+		// 前処理
+		preProcess := func(str string) string {
+			// 特定の日本語は決められた英単語に変換する
+			input := str
+			for _, ic := range config.ImplicitConversions {
+				input = strings.ReplaceAll(input, ic.Input, fmt.Sprintf("%s  ", ic.Output))
+			}
+
+			// スペースが二つ以上続いている場合は１つにする
+			re := regexp.MustCompile(`\s{2,}`)
+			input = re.ReplaceAllString(input, " ")
+
+			return input
 		}
+
+		// 前処理の実行
+		input := preProcess(d)
 
 		// TranslationAPIで文字列を翻訳する
 		translated, err := Api.translationWithCloud(config.CloudConfig.ProjectId, input)
@@ -58,6 +70,7 @@ func main() {
 			panic(err)
 		}
 
+		// 後処理
 		postProcess := func(str string) string {
 			// 丸括弧を削除
 			output := StrUtils.removeBrackets(str)
@@ -78,9 +91,12 @@ func main() {
 			return output
 		}
 
+		// 後処理を実行
+		translated = postProcess(translated)
+
 		// 翻訳後文字列を変数名に変換
-		variableName := StrUtils.toSnakeCaseCase(postProcess(translated))
-		fmt.Printf("%s => %s\n", d, variableName)
+		variableName := StrUtils.toSnakeCaseCase(translated)
+		fmt.Printf("%s => %s => %s => %s\n", d, input, translated, variableName)
 
 		variableNames = append(variableNames, variableName)
 	}
