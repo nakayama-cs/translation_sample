@@ -10,7 +10,6 @@ import (
 type config struct {
 	CloudConfig struct {
 		ProjectId          string `json:"project-id"`
-		GSpreadKeyJson     string `json:"gspread-key-json"`
 		GSpreadSheetId     string `json:"gspread-sheet-id"`
 		GSpreadInputRange  string `json:"gspread-input-range"`
 		GSpreadOutputRange string `json:"gspread-output-range"`

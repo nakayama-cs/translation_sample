@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 
-	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
 )
 
@@ -12,9 +11,7 @@ type gsheet struct{}
 var GSheet gsheet
 
 func (gsheet) getData(config *config) []string {
-	credential := option.WithCredentialsFile(config.CloudConfig.GSpreadKeyJson)
-
-	srv, err := sheets.NewService(context.Background(), credential)
+	srv, err := sheets.NewService(context.Background())
 	if err != nil {
 		panic(err)
 	}
@@ -38,9 +35,7 @@ func (gsheet) getData(config *config) []string {
 }
 
 func (gsheet) UpdateData(config *config, data []string) {
-	credential := option.WithCredentialsFile(config.CloudConfig.GSpreadKeyJson)
-
-	srv, err := sheets.NewService(context.Background(), credential)
+	srv, err := sheets.NewService(context.Background())
 	if err != nil {
 		panic(err)
 	}
