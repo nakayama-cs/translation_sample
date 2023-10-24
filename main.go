@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -57,8 +58,28 @@ func main() {
 			panic(err)
 		}
 
+		postProcess := func(str string) string {
+			// 丸括弧を削除
+			output := StrUtils.removeBrackets(str)
+
+			// ハイフンをアンダーバーに変換
+			output = strings.ReplaceAll(output, "-", "_")
+
+			// 〜'sを空文字に変換
+			output = strings.ReplaceAll(output, "'s", "")
+
+			// スラッシュをアンダーバーに変換
+			output = strings.ReplaceAll(output, "/", "_")
+
+			// 「数値〜数値」を「数値 to 数値」に変換
+			re := regexp.MustCompile(`(\d+)(?:~)(\d+)`)
+			output = re.ReplaceAllString(output, "$1 to $2")
+
+			return output
+		}
+
 		// 翻訳後文字列を変数名に変換
-		variableName := StrUtils.toSnakeCaseCase(translated)
+		variableName := StrUtils.toSnakeCaseCase(postProcess(translated))
 		fmt.Printf("%s => %s\n", d, variableName)
 
 		variableNames = append(variableNames, variableName)

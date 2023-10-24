@@ -29,6 +29,11 @@ func (str_utils) toSnakeCaseCase(str string) string {
 	return strings.ReplaceAll(strings.ToLower(str), " ", "_")
 }
 
+func (str_utils) removeBrackets(str string) string {
+	re := regexp.MustCompile(`[()（）]`)
+	return re.ReplaceAllString(str, "")
+}
+
 // trimRightIndex 単語+数値の文字列が渡された時、単語と数値に分解して返却する
 func (str_utils) trimRightIndex(str string) (string, string) {
 	re := regexp.MustCompile(`([0-9０１２３４５６７８９]+)$`)
