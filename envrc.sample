@@ -1,0 +1,2 @@
+export PATH="$(pwd)/.local/bin:${PATH}"
+export GOBIN="$(pwd)/.local/bin"

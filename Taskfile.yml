@@ -1,0 +1,11 @@
+# https://taskfile.dev
+
+version: "3"
+
+tasks:
+  init:
+    cmds:
+      - anyenv install --skip-existing goenv
+      - exec "${SHELL}" -l -c 'goenv install --skip-existing'
+      - exec "${SHELL}" -l -c 'goenv rehash'
+      - cp --no-clobber --verbose envrc.sample .envrc
