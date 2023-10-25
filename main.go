@@ -98,7 +98,7 @@ func main() {
 		translated = postProcess(translated)
 
 		// 翻訳後文字列を変数名に変換
-		variableName := StrUtils.toSnakeCaseCase(translated)
+		variableName := StrUtils.toSnakeCase(translated)
 		fmt.Printf("%s => %s => %s => %s\n", d, input, translated, variableName)
 
 		variableNames = append(variableNames, variableName)

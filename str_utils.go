@@ -25,7 +25,7 @@ func (str_utils) toLowerCamelCase(str string) string {
 }
 
 // toSnakeCaseCase スペース区切りの英字をスネーク形式の文字列に変換する
-func (str_utils) toSnakeCaseCase(str string) string {
+func (str_utils) toSnakeCase(str string) string {
 	return strings.ReplaceAll(strings.ToLower(str), " ", "_")
 }
 
