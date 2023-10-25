@@ -88,6 +88,9 @@ func main() {
 			re := regexp.MustCompile(`(\d+)(?:~)(\d+)`)
 			output = re.ReplaceAllString(output, "$1 to $2")
 
+			// 文字列の両端に空白が存在した場合はトリムする
+			output = strings.Trim(output, " ")
+
 			return output
 		}
 
