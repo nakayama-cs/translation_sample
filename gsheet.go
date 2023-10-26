@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"google.golang.org/api/sheets/v4"
 )
@@ -34,21 +35,28 @@ func (gsheet) getData(config *config) []string {
 	return rows
 }
 
-func (gsheet) UpdateData(config *config, data []string) {
+func (gsheet) UpdateData(config *config, data [][]string) {
 	srv, err := sheets.NewService(context.Background())
 	if err != nil {
 		panic(err)
 	}
 
-	values := ConvType(data, func(v string) []interface{} {
-		return []interface{}{v}
+	values := ConvType(data, func(v []string) []interface{} {
+		result := make([]interface{}, 0)
+		for _, vv := range v {
+			result = append(result, vv)
+		}
+		return result
 	})
 
 	vr := &sheets.ValueRange{
 		Values: values,
 	}
+
+	outputRange := fmt.Sprintf("%s:%s", config.CloudConfig.GSpreadOutputColStart, config.CloudConfig.GSpreadOutputColEnd)
+
 	_, err = srv.Spreadsheets.Values.Update(config.CloudConfig.GSpreadSheetId,
-		config.CloudConfig.GSpreadOutputRange, vr).ValueInputOption("RAW").Do()
+		outputRange, vr).ValueInputOption("RAW").Do()
 	if err != nil {
 		panic(err)
 	}

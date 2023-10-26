@@ -4,7 +4,8 @@
     "gspread-key-json": "keys/my-private-key.json",
     "gspread-sheet-id": "aaaasdddadfasdfasdfasdfasdf",
     "gspread-input-range": "A:A1",
-    "gspread-output-range": "B:B1"
+    "gspread-output-col-start": "B",
+    "gspread-output-col-end": "C"
   },
   "implicit-conversions": [
     {
