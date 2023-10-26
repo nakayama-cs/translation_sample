@@ -6,14 +6,17 @@ import (
 	"os"
 	"regexp"
 	"strings"
+
+	"golang.org/x/exp/slices"
 )
 
 type config struct {
 	CloudConfig struct {
-		ProjectId          string `json:"project-id"`
-		GSpreadSheetId     string `json:"gspread-sheet-id"`
-		GSpreadInputRange  string `json:"gspread-input-range"`
-		GSpreadOutputRange string `json:"gspread-output-range"`
+		ProjectId             string `json:"project-id"`
+		GSpreadSheetId        string `json:"gspread-sheet-id"`
+		GSpreadInputRange     string `json:"gspread-input-range"`
+		GSpreadOutputColStart string `json:"gspread-output-col-start"`
+		GSpreadOutputColEnd   string `json:"gspread-output-col-end"`
 	} `json:"cloud-config"`
 
 	ImplicitConversions []struct {
@@ -41,9 +44,12 @@ func main() {
 		panic(err)
 	}
 
+	dict := newStaticDict()
+
+	// スプレッドシートから翻訳対象の日本語を取得
 	data := GSheet.getData(config)
 
-	variableNames := make([]string, 0)
+	candidates := make([][]string, 0)
 	for _, d := range data {
 
 		// 前処理
@@ -64,8 +70,11 @@ func main() {
 		// 前処理の実行
 		input := preProcess(d)
 
+		// 静的辞書で変数名を取得
+		dictResults := dict.find(input)
+
 		// TranslationAPIで文字列を翻訳する
-		translated, err := Api.translationWithCloud(config.CloudConfig.ProjectId, input)
+		translated, err := Api.translateWithCloud(config.CloudConfig.ProjectId, input)
 		if err != nil {
 			panic(err)
 		}
@@ -98,12 +107,30 @@ func main() {
 		translated = postProcess(translated)
 
 		// 翻訳後文字列を変数名に変換
-		variableName := StrUtils.toSnakeCase(translated)
-		fmt.Printf("%s => %s => %s => %s\n", d, input, translated, variableName)
+		translatedVariableName := StrUtils.toSnakeCase(translated)
+		fmt.Printf("%s => %s => %s => %s\n", d, input, translated, translatedVariableName)
 
-		variableNames = append(variableNames, variableName)
+		variableNameCandidates := append(append([]string{translatedVariableName}, dictResults...), genDisplayNameCandidates(translatedVariableName)...)
+		candidates = append(candidates, Dedupe(variableNameCandidates))
 	}
 
 	// スプレッドシートに変数名を保存する
-	GSheet.UpdateData(config, variableNames)
+	GSheet.UpdateData(config, candidates)
+}
+
+// Dedupe は重複を排除した配列を返却します
+func Dedupe(array []string) []string {
+	results := make([]string, 0)
+	for i, v := range array {
+		sliced := array[i+1:]
+		if slices.Contains(sliced, v) {
+			continue
+		}
+		results = append(results, v)
+	}
+	return results
+}
+
+func genDisplayNameCandidates(translatedVariableName string) []string {
+	return []string{}
 }
