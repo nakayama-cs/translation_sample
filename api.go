@@ -13,7 +13,7 @@ type api struct{}
 
 var Api api
 
-func (api) translationWithCloud(projectID string, text string) (string, error) {
+func (api) translateWithCloud(projectID string, text string) (string, error) {
 	// 入力文字列の前処理 (単語+数字の文字列を翻訳する場合、数字によって翻訳結果が異なるため事前に分離しておく)
 	words, index := StrUtils.trimRightIndex(text)
 
