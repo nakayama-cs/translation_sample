@@ -110,7 +110,13 @@ func main() {
 		translatedVariableName := StrUtils.toSnakeCase(translated)
 		fmt.Printf("%s => %s => %s => %s\n", d, input, translated, translatedVariableName)
 
-		variableNameCandidates := append(append([]string{translatedVariableName}, dictResults...), genDisplayNameCandidates(translatedVariableName)...)
+		// 変数名にnameが含まれる場合はdisplay_nameに置き換えた変数名を生成する
+		dispNameVersionCandidates := genDisplayNameCandidates([]string{translatedVariableName})
+		// 変数名にdisplay_nameと言語種別を示す単語が含まれる場合、変数名にlang_xxxxをポストフィックスする
+		langCandidates := genLangCandidates(config, input)
+		// 日本語名に対して、複数の変換候補をリストする
+		variableNameCandidates := append(append(append([]string{translatedVariableName}, dictResults...), dispNameVersionCandidates...), langCandidates...)
+		// 変換候補から重複を取り除いたものを最終候補とする
 		candidates = append(candidates, Dedupe(variableNameCandidates))
 	}
 
@@ -131,6 +137,60 @@ func Dedupe(array []string) []string {
 	return results
 }
 
-func genDisplayNameCandidates(translatedVariableName string) []string {
-	return []string{}
+func replaceNameToDisplayName(input string) string {
+	re1 := regexp.MustCompile(`name`)
+	re2 := regexp.MustCompile(`(display_){2,}`)
+	return re2.ReplaceAllString(re1.ReplaceAllString(input, "display_name"), "display_")
+}
+
+func genDisplayNameCandidates(translatedVariableNames []string) []string {
+	generatedNames := make([]string, 0)
+	for _, translatedVariableName := range translatedVariableNames {
+		displayNameVer := replaceNameToDisplayName(translatedVariableName)
+		if displayNameVer == translatedVariableName {
+			continue
+		}
+		generatedNames = append(generatedNames, displayNameVer)
+	}
+
+	return generatedNames
+}
+
+func genLangCandidates(config *config, input string) []string {
+	convRules := [][]string{
+		[]string{`英文`, "lang_en"},
+		[]string{`カナ`, "lang_ja_kana"},
+	}
+
+	postFixs := make([]string, 0)
+	output := input
+	for _, cr := range convRules {
+		re := regexp.MustCompile(cr[0])
+		output_tmp := re.ReplaceAllString(output, "")
+		if output != output_tmp {
+			postFixs = append(postFixs, cr[1])
+		}
+
+		output = output_tmp
+	}
+
+	if len(postFixs) <= 0 {
+		return []string{}
+	}
+
+	translated, err := Api.translateWithCloud(config.CloudConfig.ProjectId, output)
+	if err != nil {
+		return []string{}
+	}
+	displayNameVersions := genDisplayNameCandidates([]string{translated})
+
+	postFix := strings.Join(postFixs, "_")
+	candidates := make([]string, 0)
+	for _, displayNameVersion := range displayNameVersions {
+		candidates = append(candidates, displayNameVersion+"_"+postFix)
+	}
+
+	return ConvType(candidates, func(v string) string {
+		return StrUtils.toSnakeCase(v)
+	})
 }
