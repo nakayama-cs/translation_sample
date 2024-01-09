@@ -10,11 +10,15 @@
     - Google Sheets API
     - Google Drive API
     - Cloud Translation API
-4. ターミナルを開き、デフォルトの認証情報を作成する。`<project ID>`には#2で作成したプロジェクトのIDを指定する。
+4. ターミナルを開き、oauth認証を行う
+```
+$ gcloud auth application-default login --scopes=openid,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/spreadsheets
+```
+5. ターミナルを開き、デフォルトの認証情報を作成する。`<project ID>`には#2で作成したプロジェクトのIDを指定する。
 ```
 $ gcloud auth application-default set-quota-project <project ID>
 ```
-5. アプリを実行する
+6. アプリを実行する
 ```
 $ cd translate_sample/
 $ go run .
